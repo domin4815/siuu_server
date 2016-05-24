@@ -49,6 +49,8 @@ public class UsersController {
                                  @RequestParam("lat") double lat,
                                  @RequestParam("lng") double lng) {
 
+        System.out.println("User: "+id+" on: "+lat+ " "+lng);
+
         User user = userRepository.findOne(id);
         if (user == null){
             return null;
