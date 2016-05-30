@@ -19,28 +19,33 @@ import java.util.Random;
 public class UsersController {
 
     private IUserRepository userRepository;
+    private Random r = new Random();
+
 
     @Autowired
     public UsersController(IUserRepository userRepository) {
         this.userRepository = userRepository;
-        Random r = new Random();
-        for (int i = 0; i< 100; i++){
-            User user = new User("User_"+i, 50.0+r.nextDouble(), 20.0+r.nextDouble());
+        for (int i = 0; i< 10; i++){
+            User user = new User("User_"+i, 49.9+r.nextDouble(), 19.5+r.nextDouble());
             userRepository.save(user);
         }
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
 
         Iterable<User> userIterable = userRepository.findAll();
-        List<User> users = new LinkedList<>();
+        List<UserDto> users = new LinkedList<>();
         Iterator<User> userIterator = userIterable.iterator();
 
         while (userIterator.hasNext()){
-            users.add(userIterator.next());
+            User u = userIterator.next();
+            u.setLat(u.getLat()+r.nextDouble()/100);
+            userRepository.save(u);
+            users.add(new UserDto(u.getId(), u.getName(), u.getLat(), u.getLng()));
         }
 
+        System.out.println("USERS GET ");
         return users;
     }
 
