@@ -1,70 +1,91 @@
 package siuu;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by domin4815 on 23.05.16.
  */
 @RestController
 public class UsersController {
-
-    private IUserRepository userRepository;
-    private Random r = new Random();
-
+    public static final Duration USER_ACTIVITY_TIME = Duration.standardMinutes(5);
 
     @Autowired
-    public UsersController(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-        for (int i = 0; i< 10; i++){
-            User user = new User("User_"+i, 49.9+r.nextDouble(), 19.5+r.nextDouble());
-            userRepository.save(user);
-        }
-    }
-
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
-    public List<UserDto> getAllUsers() {
-
-        Iterable<User> userIterable = userRepository.findAll();
-        List<UserDto> users = new LinkedList<>();
-        Iterator<User> userIterator = userIterable.iterator();
-
-        while (userIterator.hasNext()){
-            User u = userIterator.next();
-            u.setLat(u.getLat()+r.nextDouble()/100);
-            userRepository.save(u);
-            users.add(new UserDto(u.getId(), u.getName(), u.getLat(), u.getLng()));
-        }
-
-        System.out.println("USERS GET ");
-        return users;
-    }
+    private UsersRepository usersRepository;
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public String updatePosition(@RequestParam("id") int id,
-                                 @RequestParam("lat") double lat,
-                                 @RequestParam("lng") double lng) {
+    public ResponseEntity updateUser(@RequestBody User user) {
+        user.setTimestamp(DateTime.now());
+        usersRepository.save(user);
+        System.out.println("Saved user: " + user);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
-        System.out.println("User: "+id+" on: "+lat+ " "+lng);
 
-        User user = userRepository.findOne(id);
-        if (user == null){
-            return null;
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+    public ResponseEntity<User> getUser(@PathVariable("id") String userId) {
+        User user = usersRepository.findOne(userId);
+        if(user == null) {
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        } else {
+            System.out.println("Got user " + user);
+            return new ResponseEntity<User>(user, HttpStatus.OK);
         }
+    }
 
-        user.setLat(lat);
-        user.setLng(lng);
-        userRepository.save(user);
+    @RequestMapping(value = "/user/{id}/location", method = RequestMethod.POST)
+    public ResponseEntity updateUserLocation(@PathVariable("id") String userId, @RequestBody Location location) {
+        User user = usersRepository.findOne(userId);
+        if(user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        } else {
+            user.setLocation(location);
+            user.setTimestamp(DateTime.now());
+            usersRepository.save(user);
+            System.out.println("Location of user " + user + " set to " + location);
+            return new ResponseEntity(HttpStatus.OK);
+        }
+    }
 
-        return "OK";
+    @RequestMapping(value = "/user/{id}/activities", method = RequestMethod.POST)
+    public ResponseEntity updateUserActivities(@PathVariable("id") String userId, @RequestBody PreferedActivity[] activities) {
+        User user = usersRepository.findOne(userId);
+        if(user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        } else {
+            user.setPreferedActivities(Arrays.asList(activities));
+            user.setTimestamp(DateTime.now());
+            usersRepository.save(user);
+            System.out.println("Prefered activities of user " + user + " set to " + Arrays.toString(activities));
+            return new ResponseEntity(HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "/users/find", method = RequestMethod.POST)
+    public ResponseEntity<List<User>> findNearbyUsersWithPreferedActivities(
+            @RequestParam("lon") double lon,
+            @RequestParam("lat") double lat,
+            @RequestParam(value = "dist", required = false, defaultValue = "10") double distance,
+            @RequestBody String[] activityCategories
+    ) {
+        List<User> users = usersRepository.findNearbyUsersWithPreferedActivities(
+            lon, lat, distance,
+            Arrays.asList(activityCategories),
+            DateTime.now().minus(USER_ACTIVITY_TIME)
+        );
+        System.out.println("Got users " + users);
+        return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
 }
