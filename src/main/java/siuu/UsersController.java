@@ -10,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by domin4815 on 23.05.16.
@@ -22,6 +25,28 @@ public class UsersController {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @PostConstruct
+    public void insertFakeData(){
+        Random rand = new Random();
+        List<PreferedActivity> preferedActivities = new LinkedList<PreferedActivity>();
+        preferedActivities.add(new PreferedActivity("board game", "chess"));
+        preferedActivities.add(new PreferedActivity("board game", "tic tac toe"));
+        preferedActivities.add(new PreferedActivity("football", ""));
+        preferedActivities.add(new PreferedActivity("volleyball", "beach"));
+        for (int i = 0; i< 10; i++){
+            User user = new User(
+                    "User_"+i,
+                    new Location(49.9+rand.nextDouble(), 19.5+rand.nextDouble()),
+                    Arrays.asList(
+                            preferedActivities.get(i % preferedActivities.size()),
+                            preferedActivities.get((i + 1) % preferedActivities.size())
+                    ),
+                    DateTime.now()
+            );
+            usersRepository.save(user);
+        }
+    }
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity updateUser(@RequestBody User user) {
@@ -53,7 +78,7 @@ public class UsersController {
             user.setLocation(location);
             user.setTimestamp(DateTime.now());
             usersRepository.save(user);
-            System.out.println("Location of user " + user + " set to " + location);
+            System.out.println("Location of user with id " + userId + " set to " + location);
             return new ResponseEntity(HttpStatus.OK);
         }
     }
@@ -68,7 +93,7 @@ public class UsersController {
             user.setPreferedActivities(Arrays.asList(activities));
             user.setTimestamp(DateTime.now());
             usersRepository.save(user);
-            System.out.println("Prefered activities of user " + user + " set to " + Arrays.toString(activities));
+            System.out.println("Prefered activities of user with id " + userId + " set to " + Arrays.toString(activities));
             return new ResponseEntity(HttpStatus.OK);
         }
     }

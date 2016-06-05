@@ -1,5 +1,6 @@
 package siuu;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -26,5 +27,6 @@ public class User {
 
     private List<PreferedActivity> preferedActivities;
 
+    @JsonIgnore
     private DateTime timestamp;
 }
