@@ -37,7 +37,7 @@ public class UsersController {
         for (int i = 0; i< 10; i++){
             User user = new User(
                     "User_"+i,
-                    new Location(49.9+rand.nextDouble(), 19.5+rand.nextDouble()),
+                    new Location(19.5+rand.nextDouble(), 49.9+rand.nextDouble()),
                     Arrays.asList(
                             preferedActivities.get(i % preferedActivities.size()),
                             preferedActivities.get((i + 1) % preferedActivities.size())
