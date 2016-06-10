@@ -1,13 +1,11 @@
-package siuu;
+package pl.edu.agh.siuu.meetings.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
 import java.util.List;
 
 /**

@@ -1,4 +1,4 @@
-package siuu;
+package pl.edu.agh.siuu.meetings.users;
 
 import lombok.*;
 

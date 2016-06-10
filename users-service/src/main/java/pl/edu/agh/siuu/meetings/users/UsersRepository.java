@@ -1,4 +1,4 @@
-package siuu;
+package pl.edu.agh.siuu.meetings.users;
 
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.repository.MongoRepository;
