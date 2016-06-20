@@ -27,10 +27,8 @@ public class Event {
     @GeoSpatialIndexed(useGeneratedName=true)
     private Location location;
 
-    @JsonIgnore
     private DateTime startTime;
 
-    @JsonIgnore
     private DateTime endTime;
 
     private int maxPeople;
