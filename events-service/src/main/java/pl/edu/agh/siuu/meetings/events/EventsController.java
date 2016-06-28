@@ -37,4 +37,12 @@ public class EventsController {
         List<Event> events = eventsRepository.findEventsWithFriends(lon,lat,distance,participants);
         return new ResponseEntity(events, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/events", method = RequestMethod.GET)
+    public ResponseEntity<List<Event>> getEvents() {
+        List<Event> events = eventsRepository.findAdd();
+        return new ResponseEntity(events, HttpStatus.OK);
+    }
+
+
 }

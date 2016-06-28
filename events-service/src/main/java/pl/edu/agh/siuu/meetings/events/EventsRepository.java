@@ -33,4 +33,6 @@ public interface EventsRepository extends MongoRepository<Event, String>{
             double lon, double lat, double distance,
             List<String> friends
     );
+
+    public List<Event> findAll();
 }
