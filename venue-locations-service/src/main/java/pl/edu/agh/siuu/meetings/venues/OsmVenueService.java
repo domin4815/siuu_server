@@ -14,9 +14,14 @@ import java.util.Map;
 
 @Service
 public class OsmVenueService {
+
+    /*
+    http://overpass-api.de/api/interpreter?data=[out:json];(node["sport"="tennis"](around:2000,50.069925,19.9123987);way["sport"="tennis"](around:2000,50.069925,19.9123987););(._;>;);out;
+    */
+
     private static final String overpassApiUri = "http://overpass-api.de/api/interpreter";
     private static final String queryPrefix = "[out:json];(";
-    private static final String querySuffix = ");out;";
+    private static final String querySuffix = ");out%20center;";
 
     private List<String> generateTagsForCategory(String category) {
         List<String> tags = new LinkedList<String>();
@@ -50,11 +55,13 @@ public class OsmVenueService {
 
         String queryNodeAlternatives = "";
         for(String tag : osmTags) {
-            queryNodeAlternatives += "node(around:" + distance + "," + lat + "," + lon + ")" + tag + ";";
+            String locationSpecification = tag + "(around:" + distance + "," + lat + "," + lon + ")";
+            queryNodeAlternatives += "node" + locationSpecification + ";";
+            queryNodeAlternatives += "way" + locationSpecification + ";";
         }
 
         String queryString = queryPrefix + queryNodeAlternatives + querySuffix;
-        String requestUri = overpassApiUri + "?data={data}";
+        String requestUri = overpassApiUri + "?data=" + queryString;
         RestTemplate restTemplate = new RestTemplate();
         OsmResponse osmResponse = restTemplate.getForObject(requestUri, OsmResponse.class, queryString);
 
