@@ -15,6 +15,7 @@
 
     <modules>
         <module>users-service</module>
+        <module>venue-locations-service</module>
     </modules>
 
     <dependencies>
