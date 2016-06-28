@@ -15,6 +15,7 @@
 
     <modules>
         <module>users-service</module>
+        <module>facebook-service</module>
     </modules>
 
     <dependencies>
