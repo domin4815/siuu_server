@@ -80,6 +80,18 @@ public class UsersController {
         }
     }
 
+    @RequestMapping(value = "/user/{id}/activities", method = RequestMethod.GET)
+    public ResponseEntity<List<PreferedActivity>> getUserActivities(@PathVariable("id") String userId) {
+        User user = usersRepository.findOne(userId);
+        if(user == null) {
+            System.out.println("User with id " + userId + " not found");
+            return new ResponseEntity<List<PreferedActivity>>(HttpStatus.NOT_FOUND);
+        } else {
+            System.out.println("Got prefered activities of user with id " + userId + ": " + user.getPreferedActivities());
+            return new ResponseEntity<List<PreferedActivity>>(user.getPreferedActivities(), HttpStatus.OK);
+        }
+    }
+
     @RequestMapping(value = "/user/{id}/activities", method = RequestMethod.POST)
     public ResponseEntity updateUserActivities(@PathVariable("id") String userId, @RequestBody PreferedActivity[] activities) {
         User user = usersRepository.findOne(userId);
