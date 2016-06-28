@@ -17,6 +17,7 @@
         <module>users-service</module>
 		<module>events-service</module>
         <module>venue-locations-service</module>
+        <module>facebook-service</module>
     </modules>
 
     <dependencies>
