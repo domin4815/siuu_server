@@ -1,27 +1,17 @@
 package pl.edu.agh.siuu.meetings.venues;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OsmVenueService {
 
-    /*
-    http://overpass-api.de/api/interpreter?data=[out:json];(node["sport"="tennis"](around:2000,50.069925,19.9123987);way["sport"="tennis"](around:2000,50.069925,19.9123987););(._;>;);out;
-    */
-
     private static final String overpassApiUri = "http://overpass-api.de/api/interpreter";
     private static final String queryPrefix = "[out:json];(";
-    private static final String querySuffix = ");out%20center;";
+    private static final String querySuffix = ");out center;";
 
     private List<String> generateTagsForCategory(String category) {
         List<String> tags = new LinkedList<String>();
@@ -36,12 +26,18 @@ public class OsmVenueService {
         return generateTagsForCategory(category);
     }
 
-    private List<Venue> extractVenues(OsmResponse osmResponse, String category) {
-        List<OsmNode> nodes = osmResponse.getElements();
+    private List<Venue> extractVenuesFromOsmResponse(OsmResponse osmResponse, String category) {
+        List<OsmElement> elements = osmResponse.getElements();
         List<Venue> venues = new LinkedList<Venue>();
-        for(OsmNode node: nodes) {
-            Venue venue = new Venue(category, node.getLon(), node.getLat(), node.getTags().get("name"));
-            venues.add(venue);
+        for(OsmElement element: elements) {
+            if(element.getType().equals("node") && element.getTags() != null){
+                Venue venue = new Venue(category, element.getLon(), element.getLat(), element.getTags().get("name"));
+                venues.add(venue);
+            } else if(element.getType().equals("way")) {
+                Venue venue = new Venue(category, element.getCenter().getLon(), element.getCenter().getLat(),
+                        element.getTags().get("name"));
+                venues.add(venue);
+            }
         }
         return venues;
     }
@@ -55,16 +51,16 @@ public class OsmVenueService {
 
         String queryNodeAlternatives = "";
         for(String tag : osmTags) {
-            String locationSpecification = tag + "(around:" + distance + "," + lat + "," + lon + ")";
-            queryNodeAlternatives += "node" + locationSpecification + ";";
-            queryNodeAlternatives += "way" + locationSpecification + ";";
+            String tagWithlocation = tag + "(around:" + distance + "," + lat + "," + lon + ")";
+            String queryPartForTag = "(node" + tagWithlocation + ";" + "way" + tagWithlocation + ";);(._;>;);";
+            queryNodeAlternatives += queryPartForTag;
         }
 
         String queryString = queryPrefix + queryNodeAlternatives + querySuffix;
         String requestUri = overpassApiUri + "?data=" + queryString;
         RestTemplate restTemplate = new RestTemplate();
-        OsmResponse osmResponse = restTemplate.getForObject(requestUri, OsmResponse.class, queryString);
+        OsmResponse osmResponse = restTemplate.getForObject(requestUri, OsmResponse.class);
 
-        return extractVenues(osmResponse, category);
+        return extractVenuesFromOsmResponse(osmResponse, category);
     }
 }
