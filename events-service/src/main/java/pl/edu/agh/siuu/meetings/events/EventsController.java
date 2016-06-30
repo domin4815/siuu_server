@@ -40,7 +40,7 @@ public class EventsController {
 
     @RequestMapping(value = "/events", method = RequestMethod.GET)
     public ResponseEntity<List<Event>> getEvents() {
-        List<Event> events = eventsRepository.findAdd();
+        List<Event> events = eventsRepository.findAll();
         return new ResponseEntity(events, HttpStatus.OK);
     }
 
