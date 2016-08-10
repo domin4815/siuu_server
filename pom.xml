@@ -16,9 +16,8 @@
     <modules>
         <module>users-service</module>
 		<module>events-service</module>
-        <module>venue-locations-service</module>
+        <module>venues-service</module>
         <module>facebook-service</module>
-        <module>integration-service</module>
     </modules>
 
     <dependencies>

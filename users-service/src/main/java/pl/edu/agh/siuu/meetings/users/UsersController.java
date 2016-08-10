@@ -122,16 +122,4 @@ public class UsersController {
         System.out.println("Got users " + users);
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/categories", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getActivityCategories() {
-        List<String> categories = new LinkedList<String>();
-        categories.add("swimming pool");
-        categories.add("soccer");
-        categories.add("volleyball");
-        categories.add("tennis");
-        categories.add("basketball");
-        categories.add("table tennis");
-        return new ResponseEntity<List<String>>(categories, HttpStatus.OK);
-    }
 }

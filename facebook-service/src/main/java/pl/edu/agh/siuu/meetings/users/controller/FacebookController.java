@@ -24,46 +24,6 @@ import java.util.List;
 
 @Controller
 public class FacebookController {
-
-    /*private Facebook facebook;
-    private ConnectionRepository connectionRepository;
-
-    @Inject
-    public FacebookController(Facebook facebook, ConnectionRepository connectionRepository) {
-        this.facebook = facebook;
-        this.connectionRepository = connectionRepository;
-    }
-
-    @RequestMapping(path="/", method=RequestMethod.GET)
-    public String helloFacebook(Model model) {
-        if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
-            return "redirect:/connect/facebook";
-        }
-
-        model.addAttribute("facebookProfile", facebook.userOperations().getUserProfile());
-        PagedList<Post> feed = facebook.feedOperations().getFeed();
-        model.addAttribute("feed", feed);
-        return "hello";
-    }
-
-    @RequestMapping(path = "/email", method = RequestMethod.GET)
-    public String getEmail(Model model) {
-
-        if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
-            return "redirect:/connect/facebook";
-        }
-
-        model.addAttribute("facebookProfile", facebook.userOperations().getUserProfile());
-        model.addAttribute("email", facebook.userOperations().getUserProfile().getEmail());
-        return "email";
-    }
-
-    @RequestMapping(path = "/logout")
-    public String logout(HttpServletRequest request) throws URISyntaxException {
-        new RestTemplate().delete(request.getRequestURL().toString().replace(request.getRequestURI(), "") + "/connect/facebook");
-        return "redirect:/connect/facebook";
-    }*/
-
     @RequestMapping(path = "/friends", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<User>> getFriends(@RequestBody TokenString tokenString) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -44,5 +45,15 @@ public class EventsController {
         return new ResponseEntity(events, HttpStatus.OK);
     }
 
-
+    @RequestMapping(value = "/events/categories", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> getActivityCategories() {
+        List<String> categories = new LinkedList<String>();
+        categories.add("swimming pool");
+        categories.add("soccer");
+        categories.add("volleyball");
+        categories.add("tennis");
+        categories.add("basketball");
+        categories.add("table tennis");
+        return new ResponseEntity<List<String>>(categories, HttpStatus.OK);
+    }
 }
