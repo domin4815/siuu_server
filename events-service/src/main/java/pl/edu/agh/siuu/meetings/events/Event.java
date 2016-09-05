@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by robert on 6/13/16.
@@ -39,7 +40,7 @@ public class Event {
 
     private String owner;
 
-    private List<String> participants;
+    private Set<String> participants;
 
     private String comment;
 

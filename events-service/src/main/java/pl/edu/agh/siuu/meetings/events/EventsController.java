@@ -26,6 +26,16 @@ public class EventsController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/event/sub/{userId}/{eventId}", method = RequestMethod.POST)
+    public ResponseEntity addEvent(@PathVariable("userId") String userId,
+                                   @PathVariable("eventId") String eventId) {
+
+        Event event = eventsRepository.findOne(eventId);
+        event.getParticipants().add(userId);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/events/user/{id}", method = RequestMethod.POST)
     public ResponseEntity<List<Event>> getEventsForUser(
             @PathVariable("id") String userId,

@@ -45,7 +45,7 @@ events_config_uri="${events_config_uri}&servicePath=/event,/events"
 events_config_uri="${events_config_uri}&port=8080"
 curl $events_config_uri
 
-sleep 1
+sleep 10
 
 facebook_config_uri=${config_uri_prefix}
 facebook_config_uri="${facebook_config_uri}serviceName=facebook-service"
@@ -53,7 +53,7 @@ facebook_config_uri="${facebook_config_uri}&servicePath=/facebook"
 facebook_config_uri="${facebook_config_uri}&port=8081"
 curl $facebook_config_uri
 
-sleep 1
+sleep 10
 
 users_config_uri=${config_uri_prefix}
 users_config_uri="${users_config_uri}serviceName=users-service"
@@ -61,7 +61,7 @@ users_config_uri="${users_config_uri}&servicePath=/user,/users"
 users_config_uri="${users_config_uri}&port=8082"
 curl $users_config_uri
 
-sleep 1
+sleep 10
 
 venues_config_uri=${config_uri_prefix}
 venues_config_uri="${venues_config_uri}serviceName=venues-service"
