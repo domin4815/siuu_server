@@ -33,6 +33,7 @@ for service in ${services[@]}; do
         siuuproject/$service
 done
 
+sleep 3
 
 # Configure the load balancer
 
@@ -55,7 +56,7 @@ curl $facebook_config_uri
 sleep 1
 
 users_config_uri=${config_uri_prefix}
-users_config_uri="${users_config_uri}serviceName=events-service"
+users_config_uri="${users_config_uri}serviceName=users-service"
 users_config_uri="${users_config_uri}&servicePath=/user,/users"
 users_config_uri="${users_config_uri}&port=8082"
 curl $users_config_uri
