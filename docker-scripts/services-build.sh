@@ -2,7 +2,7 @@
 
 # Build sources and push them to Docker Hub
 
-services=(events-service facebook-service users-service venues-service)
+. get-services.sh $@ # set 'services' array
 
 cd ..
 

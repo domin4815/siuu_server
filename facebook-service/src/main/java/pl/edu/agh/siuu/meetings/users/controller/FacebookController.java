@@ -24,7 +24,7 @@ import java.util.List;
 
 @Controller
 public class FacebookController {
-    @RequestMapping(path = "/friends", method = RequestMethod.POST)
+    @RequestMapping(path = "/facebook/friends", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<List<User>> getFriends(@RequestBody TokenString tokenString) {
         System.out.println("Access token: " + tokenString.getString());

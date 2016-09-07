@@ -2,7 +2,7 @@
 
 # Deploy the services on the VMs
 
-services=(events-service facebook-service users-service venues-service)
+. get-services.sh $@ # set 'services' array
 
 eval $(docker-machine env siuu-1)
 
