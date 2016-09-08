@@ -4,13 +4,11 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by robert on 6/13/16.
@@ -26,14 +24,19 @@ public class EventsController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Transactional
     @RequestMapping(value = "/event/sub/{userId}/{eventId}", method = RequestMethod.POST)
     public ResponseEntity addEvent(@PathVariable("userId") String userId,
                                    @PathVariable("eventId") String eventId) {
 
         Event event = eventsRepository.findOne(eventId);
+        if (event.getParticipants() == null){
+            event.setParticipants(new HashSet<>());
+        }
         event.getParticipants().add(userId);
+        eventsRepository.save(event);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(event, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/events/user/{id}", method = RequestMethod.POST)
